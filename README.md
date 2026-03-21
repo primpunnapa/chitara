@@ -31,3 +31,6 @@ open server at http://127.0.0.1:8000/
 - User, Library, Song domain models
 - Enum-based attributes
 - CRUD via Django Admin
+
+## Demo CRUD video
+!![CRUD Demo](chitara/demo.mp4)
