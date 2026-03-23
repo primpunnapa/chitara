@@ -1,8 +1,8 @@
 from django.db import models
-from .user import User
+from django.conf import settings
 
 class Library(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='library')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

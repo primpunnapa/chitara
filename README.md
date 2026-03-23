@@ -10,7 +10,7 @@ The Chitara project is a AI-powered song generation created by Django-based appl
 ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
-    python -m pip install Django
+    pip install -r requirements.txt
 ```
 2. Run migrations:
 ```bash

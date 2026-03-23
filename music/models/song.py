@@ -1,11 +1,12 @@
 from django.db import models
+from django.conf import settings
 from .library import Library
 from .enum import Genre, Mood, Occasion, VoiceTone, GenerationStatus
 import uuid
 
 class Song(models.Model):
     library = models.ForeignKey(Library, on_delete=models.CASCADE, related_name='songs')
-    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='songs')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     title = models.CharField(max_length=255)
     audio_url = models.URLField(blank=True)
