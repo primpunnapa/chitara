@@ -26,7 +26,40 @@ open server at http://127.0.0.1:8000/
 ```bash
    python manage.py createsuperuser
 ```
+## How to use strategies
+1. go to termial and run python shell
+```bash
+   python manage.py shell
+```
+2. To use mock strategy and generate a song
+```python
+from music.strategies.mock_strategy import MockSongGeneratorStrategy
+strategy = MockSongGeneratorStrategy()
 
+data = {
+    "title": "mock song",
+    "audio_url" : "https://example.com/mock-song.mp3"
+}
+
+strategy.generate(data)
+```
+3. To use suno strategy and generate a song
+```python
+from music.strategies.suno_strategy import SunoSongGeneratorStrategy
+
+strategy = SunoSongGeneratorStrategy()
+
+data = {
+    "prompt": "A calm and relaxing piano track with soft melodies",
+    "style": "Classical",
+    "title": "Peaceful Piano Meditation",
+    "customMode": False,
+    "instrumental": True,
+    "model": "V4_5ALL",
+    "callBackUrl": "https://example.com/callback" 
+}
+strategy.generate(data)
+```
 ## Features
 - User, Library, Song domain models
 - Enum-based attributes
