@@ -123,3 +123,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'music.User'
+
+GENERATOR_STRATEGY = "mock"  # or "suno"
+SUNO_API_KEY = "a8707e629cd80fccd8c2e624fc63b402"

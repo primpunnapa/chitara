@@ -34,6 +34,8 @@ class VoiceTone(models.TextChoices):
     CHILD = 'CHILD', 'Child'
 
 class GenerationStatus(models.TextChoices):
-    PENDING = 'PENDING', 'Pending'
-    COMPLETED = 'COMPLETED', 'Completed'
-    FAILED = 'FAILED', 'Failed'
+    PENDING = "PENDING"
+    TEXT_SUCCESS = "TEXT_SUCCESS"
+    FIRST_SUCCESS = "FIRST_SUCCESS"
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
