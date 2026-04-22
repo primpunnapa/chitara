@@ -16,8 +16,10 @@ class Song(models.Model):
     mood = models.CharField(max_length=20, choices=Mood.choices)
     occasion = models.CharField(max_length=20, choices=Occasion.choices)
     voice_tone = models.CharField(max_length=20, choices=VoiceTone.choices)
+    description = models.TextField(blank=True)
 
     generation_status = models.CharField(max_length=20, choices=GenerationStatus.choices)
+    duration = models.IntegerField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,4 +32,6 @@ class Song(models.Model):
         return self.title
     
     def save(self, *args, **kwargs):
+        if not self.audio_url:
+            self.audio_url = self.generate_audio_url()
         super().save(*args, **kwargs)

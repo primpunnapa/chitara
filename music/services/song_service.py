@@ -19,6 +19,8 @@ class SongGenerationContext:
             mood=data['mood'],
             occasion=data['occasion'],
             voice_tone=data['voice_tone'],
+            description=data['description'],
+            duration=result.get("duration"),
             generation_status=result.get("status")
         )
 

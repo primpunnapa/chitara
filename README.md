@@ -39,7 +39,8 @@ https://sunoapi.org/api-key
 ### Option 1: Via the test file
 ```bash
 python manage.py test_generate --strategy=mock
-python manage.py test_generate --strategy=suno
+python manage.py test_generate --strategy=suno # this will create a new song and print the result
+python manage.py test_generate --strategy suno --task_id your_existing_task_id_here # no credit used, just check status of existing task
 ```
 ### Option 2: Via the curl command
 ```bash
@@ -107,3 +108,7 @@ strategy.generate(data)
 - With command: `python manage.py test_generate --strategy=suno`
 ![suno strategy](./screenshots/suno_command.png)
 ![suno strategy](./screenshots/suno_ui.png)
+
+- With command: `python manage.py test_generate --strategy=suno --task_id your_existing_task_id_here`
+![suno strategy existing task](./screenshots/suno_command_exist.png)
+![suno strategy existing task](./screenshots/suno_ui_exist.png)

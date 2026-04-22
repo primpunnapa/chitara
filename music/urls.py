@@ -8,4 +8,5 @@ urlpatterns = [
     path('library/', library_controller.library_page, name='library'),
     path('song/generate/', song_controller.generate_song_page, name='song_generate'),
     path('song/create/', song_controller.create_song, name='song_create'),
+    path('song/<int:song_id>/', song_controller.song_detail, name='song_detail'),
 ]
