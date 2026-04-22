@@ -26,8 +26,37 @@ open server at http://127.0.0.1:8000/
 ```bash
    python manage.py createsuperuser
 ```
+
+### Note: Make sure to set the SUNO_API_KEY in the .env file before using the Suno strategy.
+#### Example .env file:
+```
+SUNO_API_KEY="your_suno_api_key_here"
+```
+To get a SUNO_API_KEY, you can sign up for an account on the Suno website and generate an API key from your account dashboard. 
+https://sunoapi.org/api-key
+
 ## How to use strategies
-1. go to termial and run python shell
+### Option 1: Via the test file
+```bash
+python manage.py test_generate --strategy=mock
+python manage.py test_generate --strategy=suno
+```
+### Option 2: Via the curl command
+```bash
+```bash
+curl -X POST http://127.0.0.1:8000/music/song/create/ \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Test Song",
+  "genre": "Classical",
+  "mood": "Peaceful",
+  "occasion": "Relaxation",
+  "voice_tone": "Soft",
+  "prompt": "Relaxing piano"
+}'
+```
+### Option 3: Using Django Shell
+1. go to terminal and run python shell
 ```bash
    python manage.py shell
 ```
@@ -60,10 +89,21 @@ data = {
 }
 strategy.generate(data)
 ```
+
 ## Features
 - User, Library, Song domain models
 - Enum-based attributes
 - CRUD via Django Admin
 
 ## Demo CRUD video
-![CRUD Demo](./demo.mp4)
+![CRUD Demo](./screenshots/demo.mp4)
+
+## Mock Strategy
+- With command: `python manage.py test_generate --strategy=mock`
+![mock strategy](./screenshots/mock_command.png)
+![mock strategy](./screenshots/mock_ui.png)
+
+## Suno Strategy
+- With command: `python manage.py test_generate --strategy=suno`
+![suno strategy](./screenshots/suno_command.png)
+![suno strategy](./screenshots/suno_ui.png)

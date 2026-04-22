@@ -8,3 +8,18 @@ class MockSongGeneratorStrategy(SongGeneratorStrategy):
             "status": "SUCCESS",
             "title": request_data['title']
         }
+    
+    def check_status(self, task_id):
+        return {
+            "data": {
+                "status": "SUCCESS",
+                "response": {
+                    "data": [
+                        {
+                            "audio_url": "https://example.com/mock-song.mp3",
+                            "title": "Mock Song"
+                        }
+                    ]
+                }
+            }
+        }
