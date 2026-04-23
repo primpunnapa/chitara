@@ -13,5 +13,4 @@ def get_generator_strategy(strategy_name=None):
     elif strategy_name == "suno":
         return SunoSongGeneratorStrategy()
     
-    # fallback safety
     return SunoSongGeneratorStrategy()

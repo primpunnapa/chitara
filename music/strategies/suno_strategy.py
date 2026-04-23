@@ -41,7 +41,6 @@ class SunoSongGeneratorStrategy(SongGeneratorStrategy):
             "callBackUrl": "https://example.com/callback"
         }
 
-
         response = requests.post(
             f"{self.BASE_URL}/generate",
             json=request_data,
@@ -51,12 +50,22 @@ class SunoSongGeneratorStrategy(SongGeneratorStrategy):
         print("Suno API response:", response.status_code, response.text)
 
         data = response.json()
+        
+        # Check if API returned an error
+        if data.get('code') != 200:
+            error_msg = data.get('msg', 'Failed to generate song')
+            raise Exception(f"Suno API Error: {error_msg}")
+        
+        # Check if data is null/None
+        if data.get('data') is None:
+            error_msg = data.get('msg', 'No task data returned')
+            raise Exception(f"Suno API Error: {error_msg}")
+        
         task_id = data['data']['taskId']
 
         for _ in range(100):  
             time.sleep(10) 
             result = self.check_status(task_id)
-            # print(result)
             if result:
                 return {
                     "audio_url": result.get("audio_url"),
@@ -66,10 +75,7 @@ class SunoSongGeneratorStrategy(SongGeneratorStrategy):
                     "status": result.get("status")
                 }
 
-        return {
-            "task_id": task_id,
-            "status": "FAILED"
-        }
+        raise Exception("Song generation timed out. Please try again.")
     
     def check_status(self, task_id):
         url = f"{self.BASE_URL}/generate/record-info?taskId={task_id}"
@@ -77,7 +83,17 @@ class SunoSongGeneratorStrategy(SongGeneratorStrategy):
 
         response = requests.get(url, headers=headers)
         result = response.json()
-        status = result['data']['status']
+        
+        # Check for API errors
+        if result.get('code') != 200:
+            error_msg = result.get('msg', 'Failed to check song status')
+            raise Exception(f"Suno API Error: {error_msg}")
+        
+        # Check if data exists
+        if result.get('data') is None:
+            raise Exception("No status data returned from Suno API")
+        
+        status = result['data'].get('status')
 
         if status == 'SUCCESS':
             print("Generation complete!")
@@ -91,13 +107,12 @@ class SunoSongGeneratorStrategy(SongGeneratorStrategy):
                 "title": audio_data.get("title"),
                 "duration": audio_data.get("duration"),
             }
-            # return audio_data
         elif status in self.PENDING_STATUS:
             print("Still generating...")
             return None
         elif status in self.FAILED_STATUS:
-            print(f"Generation failed with status: {status}")
-            return None
+            error_detail = result.get('msg', f'Generation failed with status: {status}')
+            raise Exception(f"Suno API Error: {error_detail}")
         else:
             print(f"Generation: {status}")
             return None
