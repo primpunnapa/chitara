@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chitara - AI-Powered Songwriting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --background: 210 60% 98%;
+            --foreground: 220 45% 18%;
+            --sky-50: 205 90% 96%;
+            --sky-100: 205 85% 90%;
+            --sky-200: 205 80% 82%;
+            --sky-300: 210 75% 72%;
+            --sky-400: 215 70% 62%;
+            --sky-500: 220 65% 52%;
+            --sky-600: 222 60% 42%;
+            --cream: 40 50% 96%;
+            --mist: 200 50% 94%;
+            
+            --gradient-sky: linear-gradient(135deg, hsl(205 90% 92%), hsl(220 80% 88%));
+            --gradient-hero: radial-gradient(ellipse at top, hsl(210 90% 92%), hsl(220 75% 96%) 60%, hsl(40 60% 98%));
+            --gradient-card: linear-gradient(160deg, hsl(0 0% 100% / 0.85), hsl(205 80% 96% / 0.6));
+            --gradient-primary: linear-gradient(135deg, hsl(215 75% 65%), hsl(225 70% 55%));
+            --gradient-glow: radial-gradient(circle, hsl(210 90% 75% / 0.5), transparent 70%);
+            
+            --shadow-soft: 0 10px 40px -15px hsl(220 60% 50% / 0.18);
+            --shadow-glow: 0 20px 60px -20px hsl(215 80% 60% / 0.35);
+            --shadow-card: 0 4px 20px -8px hsl(220 50% 40% / 0.12);
+            
+            --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--gradient-hero);
+            color: hsl(var(--foreground));
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, .font-display {
+            font-family: 'Fraunces', Georgia, serif;
+            font-optical-sizing: auto;
+            letter-spacing: -0.02em;
+        }
+
+        
+        .max-w-7xl {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Navigation */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            margin: 0 auto;
+            max-width: 80rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-glow);
+            font-size: 1.2rem;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+        }
+        
+        .sign-in-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 9999px;
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid hsl(var(--sky-100));
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: hsl(var(--foreground));
+            transition: all 0.3s ease;
+        }
+        
+        .sign-in-btn:hover {
+            background: hsl(0 0% 100% / 0.85);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 3rem 0 6rem;
+            animation: fade-up 0.8s var(--transition-smooth);
+        }
+        
+        @media (max-width: 1024px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .hero-left h2 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 1rem;
+            border-radius: 9999px;
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid hsl(var(--sky-100));
+            font-size: 0.875rem;
+            color: hsl(var(--sky-600));
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            width: fit-content;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 600;
+            line-height: 1.1;
+            color: hsl(var(--foreground));
+            margin-bottom: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+        
+        .hero-title em {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-style: normal;
+        }
+        
+        .hero-description {
+            font-size: 1.125rem;
+            color: hsl(220 20% 50%);
+            max-width: 28rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s var(--transition-smooth);
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: hsl(var(--background));
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-secondary {
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid hsl(var(--sky-100));
+            color: hsl(var(--foreground));
+        }
+        
+        .btn-secondary:hover {
+            background: hsl(0 0% 100% / 0.85);
+        }
+        
+        .stats {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            color: hsl(220 20% 50%);
+        }
+        
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            color: hsl(var(--foreground));
+            font-weight: 600;
+        }
+        
+        .divider {
+            width: 1px;
+            height: 2rem;
+            background: hsl(var(--sky-200));
+        }
+        
+        /* Hero Right - Visual */
+        .hero-visual {
+            position: relative;
+            animation: fade-up 0.8s var(--transition-smooth) 0.15s both;
+        }
+        
+        .glow-bg {
+            position: absolute;
+            inset: -3rem;
+            background: var(--gradient-glow);
+            filter: blur(3rem);
+            pointer-events: none;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card {
+            aspect-ratio: 1;
+            border-radius: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card1 {
+            background: linear-gradient(135deg, hsl(210 85% 85%), hsl(230 75% 70%));
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .card2 {
+            background: linear-gradient(135deg, hsl(230 85% 85%), hsl(250 75% 70%));
+            animation: float 6s ease-in-out infinite 0.4s;
+            transform: translateY(20px);
+        }
+        
+        .card3 {
+            background: linear-gradient(135deg, hsl(195 85% 85%), hsl(215 75% 70%));
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .card4 {
+            background: linear-gradient(135deg, hsl(245 85% 85%), hsl(265 75% 70%));
+            animation: float 6s ease-in-out infinite 0.4s;
+            transform: translateY(20px);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.4); }
+            50% { transform: scaleY(1); }
+        }
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-wave { animation: wave 1s ease-in-out infinite; }
+        .animate-fade-up { animation: fade-up 0.6s var(--transition-smooth) both; }
+        
+        /* Player Card */
+        .player-card {
+            position: absolute;
+            bottom: -1.5rem;
+            left: -1.5rem;
+            right: 3rem;
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid hsl(0 0% 100% / 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 10;
+        }
+        
+        .player-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: hsl(var(--background));
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .player-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .player-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: hsl(var(--foreground));
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .player-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.25rem;
+            margin-top: 0.375rem;
+            height: 1rem;
+        }
+        
+        .bar {
+            width: 0.25rem;
+            background: hsl(var(--sky-600) / 0.7);
+            border-radius: 2px;
+            animation: wave 0.6s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { height: 20%; }
+            50% { height: 100%; }
+        }
+        
+        /* How It Works */
+        .how-section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.75rem;
+        }
+        
+        .section-subtitle {
+            color: hsl(220 20% 50%);
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .step-card {
+            background: var(--gradient-card);
+            border-radius: 1.875rem;
+            padding: 2rem;
+            border: 1px solid hsl(var(--sky-200) / 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s var(--transition-smooth);
+        }
+        
+        .step-card:hover {
+            box-shadow: var(--shadow-card);
+        }
+        
+        .step-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.5rem;
+        }
+        
+        .step-desc {
+            color: hsl(220 20% 50%);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            border-top: 1px solid hsl(var(--sky-200) / 0.1);
+            color: hsl(220 20% 50%);
+            font-size: 0.875rem;
+        }
+        
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="logo-section">
+            <div class="logo-icon">🎵</div>
+            <span class="logo-text">Chitara</span>
+        </div>
+        {% if user.is_authenticated %}
+            <a href="{% url 'account_logout' %}" class="sign-in-btn">Sign out</a>
+        {% else %}
+            <a href="{% url 'music:login' %}" class="sign-in-btn">Sign in</a>
+        {% endif %}
+    </header>
+
+    <!-- Hero Section -->
+    <section class="max-w-7xl" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; padding: 3rem 0 6rem;">
+        <div class="hero-left" style="animation: fadeUp 0.8s ease-out;">
+            <h2>AI-powered songwriting</h2>
+            <h1 class="hero-title">Compose songs that <em>feel like you</em>.</h1>
+            <p class="hero-description">Pick a mood, an occasion, a voice — and let Melodia weave a track in seconds. From birthday ballads to workout anthems, every song is uniquely yours.</p>
+            
+            <div class="button-group">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'music:library' %}" class="btn btn-primary">Go to Library →</a>
+                {% else %}
+                    <a href="{% url 'music:login' %}" class="btn btn-primary">Start creating →</a>
+                {% endif %}
+                <a href="#how" class="btn btn-secondary">How it works</a>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">20</span>
+                    <span>daily generations</span>
+                </div>
+                <div class="divider"></div>
+                <div class="stat">
+                    <span class="stat-number">8</span>
+                    <span>genres, infinite moods</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Cards -->
+        <div class="hero-visual">
+            <div class="glow-bg"></div>
+            <div class="cards-grid">
+                <div class="card card1">🎵</div>
+                <div class="card card2">🎸</div>
+                <div class="card card3">🎹</div>
+                <div class="card card4">🎤</div>
+            </div>
+            
+            <!-- Player Card -->
+            <div class="player-card">
+                <div class="player-icon">🎧</div>
+                <div class="player-info">
+                    <div class="player-title">Whispers of Dawn</div>
+                    <div class="player-bars">
+                        <span class="bar" style="height: 40%; animation-delay: 0s;"></span>
+                        <span class="bar" style="height: 70%; animation-delay: 0.1s;"></span>
+                        <span class="bar" style="height: 100%; animation-delay: 0.2s;"></span>
+                        <span class="bar" style="height: 60%; animation-delay: 0.3s;"></span>
+                        <span class="bar" style="height: 90%; animation-delay: 0.4s;"></span>
+                        <span class="bar" style="height: 50%; animation-delay: 0.5s;"></span>
+                        <span class="bar" style="height: 80%; animation-delay: 0.6s;"></span>
+                        <span class="bar" style="height: 40%; animation-delay: 0.7s;"></span>
+                        <span class="bar" style="height: 70%; animation-delay: 0.8s;"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how" class="max-w-7xl how-section">
+        <div class="section-title">
+            <h2>Three steps to your song</h2>
+            <p class="section-subtitle">No music theory required.</p>
+        </div>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon">✨</div>
+                <h3 class="step-title">Describe</h3>
+                <p class="step-desc">Choose genre, mood, occasion and voice tone.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">🎵</div>
+                <h3 class="step-title">Generate</h3>
+                <p class="step-desc">Our AI composes a full track in under a minute.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon">🎧</div>
+                <h3 class="step-title">Enjoy</h3>
+                <p class="step-desc">Save to your library, replay, and share with anyone.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl">
+        © 2026 Chitara. Built with ❤️ by a passionate team of music and AI enthusiasts. All rights reserved.
+    </footer>
+</body>
+</html>

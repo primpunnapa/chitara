@@ -20,7 +20,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(url='music/', permanent=False)),  # Redirect root to music
+    path('', RedirectView.as_view(url='music/', permanent=False)), 
     path('accounts/', include('allauth.urls')),
     path('music/', include('music.urls')),
 ]

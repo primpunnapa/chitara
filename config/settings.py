@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'music',
+    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -79,12 +80,13 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Django allauth config
-SITE_ID = 1
+SITE_ID = 2
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-LOGIN_REDIRECT_URL = 'music:library'  # Redirect to library after login
-LOGOUT_REDIRECT_URL = 'music:landing'  # Redirect to landing after logout
+LOGIN_REDIRECT_URL = 'music:library'  
+LOGOUT_REDIRECT_URL = 'music:landing'
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ROOT_URLCONF = 'config.urls'
 
@@ -160,10 +162,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'music.User'
 
-GENERATOR_STRATEGY = os.getenv("GENERATOR_STRATEGY", "mock")
 load_dotenv()
-SUNO_API_KEY = os.getenv("SUNO_API_KEY")
 
-# Google OAuth Configuration
+GENERATOR_STRATEGY = os.getenv("GENERATOR_STRATEGY", "mock")
+SUNO_API_KEY = os.getenv("SUNO_API_KEY")
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.getenv("GOOGLE_OAUTH_CLIENT_SECRET")

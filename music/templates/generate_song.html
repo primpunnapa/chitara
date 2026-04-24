@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate a Song - Chitara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --background: 210 60% 98%;
+            --foreground: 220 45% 18%;
+            --sky-50: 205 90% 96%;
+            --sky-100: 205 85% 90%;
+            --sky-200: 205 80% 82%;
+            --sky-300: 210 75% 72%;
+            --sky-400: 215 70% 62%;
+            --sky-500: 220 65% 52%;
+            --sky-600: 222 60% 42%;
+            
+            --gradient-hero: radial-gradient(ellipse at top, hsl(210 90% 92%), hsl(220 75% 96%) 60%, hsl(40 60% 98%));
+            --gradient-card: linear-gradient(160deg, hsl(0 0% 100% / 0.85), hsl(205 80% 96% / 0.6));
+            --gradient-primary: linear-gradient(135deg, hsl(215 75% 65%), hsl(225 70% 55%));
+            --gradient-glow: radial-gradient(circle, hsl(210 90% 75% / 0.5), transparent 70%);
+            
+            --shadow-soft: 0 10px 40px -15px hsl(220 60% 50% / 0.18);
+            --shadow-glow: 0 20px 60px -20px hsl(215 80% 60% / 0.35);
+            --shadow-card: 0 4px 20px -8px hsl(220 50% 40% / 0.12);
+            
+            --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--gradient-hero);
+            color: hsl(var(--foreground));
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, .font-display {
+            font-family: 'Fraunces', Georgia, serif;
+            font-optical-sizing: auto;
+            letter-spacing: -0.02em;
+        }
+        
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            animation: fade-up 0.6s var(--transition-smooth);
+        }
+        
+        /* Header */
+        .header {
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .header p {
+            color: hsl(220 20% 50%);
+            margin-top: 0.5rem;
+        }
+        
+        /* Form */
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+            background: var(--gradient-card);
+            border-radius: 1.875rem;
+            padding: 1.5rem;
+            border: 1px solid hsl(var(--sky-200) / 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+        }
+        
+        @media (min-width: 768px) {
+            .form {
+                padding: 2rem;
+            }
+        }
+        
+        /* Form Group */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: hsl(var(--foreground));
+        }
+        
+        .form-group.with-pills label {
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Input */
+        input[type="text"],
+        textarea {
+            padding: 0.75rem 1rem;
+            border-radius: 0.875rem;
+            background: white;
+            border: 1px solid hsl(var(--sky-200));
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 1rem;
+            color: hsl(var(--foreground));
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]::placeholder,
+        textarea::placeholder {
+            color: hsl(220 20% 50%);
+        }
+        
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: hsl(var(--sky-500) / 0.5);
+            box-shadow: 0 0 0 2px hsl(var(--sky-500) / 0.1);
+        }
+        
+        textarea {
+            resize: none;
+            min-height: 6rem;
+        }
+        
+        /* Pill Buttons */
+        .pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .pill {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid hsl(var(--sky-100));
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: hsl(var(--foreground));
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+        }
+        
+        .pill:hover:not(.active) {
+            border-color: hsl(var(--sky-500) / 0.4);
+        }
+        
+        .pill.active {
+            background: var(--gradient-primary);
+            color: hsl(var(--background));
+            border: none;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 0.875rem;
+            background: var(--gradient-primary);
+            color: hsl(var(--background));
+            font-weight: 500;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s var(--transition-smooth);
+        }
+        
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+        
+        .spinner {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid hsl(var(--background) / 0.2);
+            border-top-color: hsl(var(--background));
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 0.875rem;
+            background: white;
+            color: hsl(var(--foreground));
+            box-shadow: var(--shadow-glow);
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideUp 0.3s var(--transition-smooth);
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        
+        .toast.success {
+            background: hsl(142 71% 45%);
+            color: white;
+        }
+        
+        .toast.error {
+            background: hsl(0 75% 60%);
+            color: white;
+        }
+        
+        .toast.loading {
+            background: hsl(var(--sky-500));
+            color: white;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Generate a song</h1>
+            <p>Shape your sound with a few choices.</p>
+        </div>
+
+        <!-- Form -->
+        <form class="form" id="generateForm" method="POST" action="{% url 'music:song_create' %}">
+            {% csrf_token %}
+            <!-- Title -->
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input
+                    type="text"
+                    id="title"
+                    placeholder="e.g. Sunrise Over Pines"
+                    required
+                />
+            </div>
+
+            <!-- Genre -->
+            <div class="form-group with-pills">
+                <label>Genre</label>
+                <div class="pills" id="genrePills"></div>
+                <input type="hidden" id="genre" value="Pop">
+            </div>
+
+            <!-- Mood -->
+            <div class="form-group with-pills">
+                <label>Mood</label>
+                <div class="pills" id="moodPills"></div>
+                <input type="hidden" id="mood" value="Happy">
+            </div>
+
+            <!-- Occasion -->
+            <div class="form-group with-pills">
+                <label>Occasion</label>
+                <div class="pills" id="occasionPills"></div>
+                <input type="hidden" id="occasion" value="Relaxation">
+            </div>
+
+            <!-- Voice Tone -->
+            <div class="form-group with-pills">
+                <label>Voice tone</label>
+                <div class="pills" id="voicePills"></div>
+                <input type="hidden" id="voice" value="Male">
+            </div>
+
+            <!-- Optional Details -->
+            <div class="form-group">
+                <label for="description">More details (optional)</label>
+                <textarea
+                    id="description"
+                    placeholder="Describe the story, or paste lyrics..."
+                ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span>Generate song</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        const GENRES = ['POP', 'ROCK', 'JAZZ', 'R&B', 'CLASSICAL', 'COUNTRY', 'HIP-HOP', 'EDM'];
+        const MOODS = ['HAPPY', 'SAD', 'ENERGETIC', 'CALM', 'ROMANTIC'];
+        const OCCASIONS = ['BIRTHDAY', 'PARTY', 'WEDDING', 'WORKOUT', 'RELAXATION', 'MOURNING', 'ANNIVERSARY'];
+        const VOICE_TONES = ['MALE', 'FEMALE', 'CHILD'];
+
+        // Initialize pills
+        function initPills(containerId, options, fieldId, defaultValue) {
+            const container = document.getElementById(containerId);
+            const field = document.getElementById(fieldId);
+            field.value = defaultValue;
+
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `pill ${option === defaultValue ? 'active' : ''}`;
+                button.textContent = option;
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll(`#${containerId} .pill`).forEach(b => b.classList.remove('active'));
+                    button.classList.add('active');
+                    field.value = option;
+                });
+                container.appendChild(button);
+            });
+        }
+
+        // Initialize all pill selectors
+        initPills('genrePills', GENRES, 'genre', 'Pop');
+        initPills('moodPills', MOODS, 'mood', 'Happy');
+        initPills('occasionPills', OCCASIONS, 'occasion', 'Relaxation');
+        initPills('voicePills', VOICE_TONES, 'voice', 'Male');
+
+        // Toast notifications
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            // Longer duration for error messages
+            const duration = type === 'error' ? 4000 : 2000;
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s var(--transition-smooth) reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // Form submission
+        document.getElementById('generateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('title').value.trim();
+            if (!title) {
+                showToast('Please give your song a title', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+
+            showToast('Composing your song...', 'loading');
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('genre', document.getElementById('genre').value);
+            formData.append('mood', document.getElementById('mood').value);
+            formData.append('occasion', document.getElementById('occasion').value);
+            formData.append('voice_tone', document.getElementById('voice').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+            try {
+                const response = await fetch('{% url "music:song_create" %}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Song generated!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `/music/song/${result.song_id}/`;
+                    }, 500);
+                } else {
+                    // Extract the error message and remove "Suno API Error: " prefix if present
+                    let errorMsg = result.error || 'Generation failed';
+                    errorMsg = errorMsg.replace(/^Suno API Error: /, '');
+                    showToast(errorMsg, 'error');
+                    submitBtn.disabled = false;
+                }
+
+            } catch (err) {
+                console.error('Error:', err);
+                showToast('Error connecting to server. Please check your connection and try again.', 'error');
+                submitBtn.disabled = false;
+            }
+        }); 
+    </script>
+</body>
+</html>

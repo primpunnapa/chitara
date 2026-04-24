@@ -42,20 +42,18 @@ python manage.py test_generate --strategy=mock
 python manage.py test_generate --strategy=suno # this will create a new song and print the result
 python manage.py test_generate --strategy suno --task_id your_existing_task_id_here # no credit used, just check status of existing task
 ```
-### Option 2: Via the curl command
+### Option 2: Via the UI
+please make sure to set the GENERATOR_STRATEGY in the .env file before using the UI.
 ```bash
-```bash
-curl -X POST http://127.0.0.1:8000/music/song/create/ \
--H "Content-Type: application/json" \
--d '{
-  "title": "Test Song",
-  "genre": "Classical",
-  "mood": "Peaceful",
-  "occasion": "Relaxation",
-  "voice_tone": "Soft",
-  "prompt": "Relaxing piano"
-}'
+GENERATOR_STRATEGY="mock"  # or "suno"
 ```
+1. run the server and login with your account
+```bash
+   python manage.py runserver
+```
+2. Go to the library page and click on "New Song" button
+3. Fill in the form and click "Generate" to create a new song using the selected strategy (mock or suno)
+
 ### Option 3: Using Django Shell
 1. go to terminal and run python shell
 ```bash

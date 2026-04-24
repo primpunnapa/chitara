@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Library - Melodia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --background: 210 60% 98%;
+            --foreground: 220 45% 18%;
+            --sky-50: 205 90% 96%;
+            --sky-100: 205 85% 90%;
+            --sky-200: 205 80% 82%;
+            --sky-300: 210 75% 72%;
+            --sky-400: 215 70% 62%;
+            --sky-500: 220 65% 52%;
+            --sky-600: 222 60% 42%;
+            --cream: 40 50% 96%;
+            --mist: 200 50% 94%;
+            
+            --gradient-sky: linear-gradient(135deg, hsl(205 90% 92%), hsl(220 80% 88%));
+            --gradient-hero: radial-gradient(ellipse at top, hsl(210 90% 92%), hsl(220 75% 96%) 60%, hsl(40 60% 98%));
+            --gradient-card: linear-gradient(160deg, hsl(0 0% 100% / 0.85), hsl(205 80% 96% / 0.6));
+            --gradient-primary: linear-gradient(135deg, hsl(215 75% 65%), hsl(225 70% 55%));
+            --gradient-glow: radial-gradient(circle, hsl(210 90% 75% / 0.5), transparent 70%);
+            
+            --shadow-soft: 0 10px 40px -15px hsl(220 60% 50% / 0.18);
+            --shadow-glow: 0 20px 60px -20px hsl(215 80% 60% / 0.35);
+            --shadow-card: 0 4px 20px -8px hsl(220 50% 40% / 0.12);
+            
+            --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+
+            --text-secondary: hsl(220 20% 50%);
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--gradient-hero);
+            color: hsl(var(--foreground));
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, .font-display {
+            font-family: 'Fraunces', Georgia, serif;
+            font-optical-sizing: auto;
+            letter-spacing: -0.02em;
+        }
+        
+        .max-w-7xl {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .container {
+            max-width: 80rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            animation: fade-up 0.6s var(--transition-smooth);
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header {
+                flex-direction: row;
+                align-items: flex-end;
+                justify-content: space-between;
+                gap: 1rem;
+            }
+        }
+        
+        .header-left {
+            flex: 1;
+        }
+        
+        .welcome-text {
+            font-size: 0.875rem;
+            color: --text-secondary;
+            margin-bottom: 0.25rem;
+        }
+        
+        .header-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-top: 0.25rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header-title {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .btn-new-song {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px;
+            background: var(--gradient-primary);
+            color: hsl(var(--background));
+            font-weight: 500;
+            text-decoration: none;
+            box-shadow: var(--shadow-glow);
+            transition: all 0.3s var(--transition-smooth);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-new-song:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Search */
+        .search-container {
+            position: relative;
+            max-width: 28rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            color: --text-secondary;
+            pointer-events: none;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding-left: 2.75rem;
+            padding-right: 1rem;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-radius: 1.125rem;
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid hsl(var(--sky-100));
+            font-size: 1rem;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: hsl(var(--foreground));
+            transition: all 0.3s ease;
+        }
+        
+        .search-input::placeholder {
+            color: --text-secondary;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: hsl(var(--sky-500) / 0.5);
+            box-shadow: 0 0 0 2px hsl(var(--sky-500) / 0.1);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 1rem;
+            background: hsl(0 0% 100% / 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1.875rem;
+            border: 1px solid hsl(var(--sky-200) / 0.5);
+        }
+        
+        .empty-state-text {
+            color: --text-secondary;
+        }
+        
+        /* Songs Grid */
+        .songs-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+        
+        @media (min-width: 640px) {
+            .songs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .songs-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* Song Card */
+        .song-card {
+            display: block;
+            background: var(--gradient-card);
+            border-radius: 1.875rem;
+            padding: 1.25rem;
+            border: 1px solid hsl(var(--sky-200) / 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+            text-decoration: none;
+            color: hsl(var(--foreground));
+            transition: all 0.3s var(--transition-smooth);
+        }
+        
+        .song-card:hover {
+            box-shadow: var(--shadow-soft);
+            transform: translateY(-3px);
+        }
+        
+        .song-card-content {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .song-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: 0.75rem;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .song-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .song-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.125rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.3s ease;
+        }
+        
+        .song-card:hover .song-title {
+            color: hsl(var(--sky-600));
+        }
+        
+        .song-meta {
+            font-size: 0.875rem;
+            color: --text-secondary;
+            margin-top: 0.125rem;
+        }
+        
+        .song-duration {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: --text-secondary;
+        }
+        
+        .song-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+            margin-top: 1rem;
+        }
+        
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.625rem;
+            border-radius: 9999px;
+            background: hsl(205 90% 92%);
+            color: hsl(var(--sky-600));
+            white-space: nowrap;
+        }
+        
+        .tag.occasion {
+            background: hsl(205 75% 90%);
+            color: hsl(var(--sky-600));
+        }
+        
+        .tag.voice {
+            background: hsl(40 70% 90%);
+            color: hsl(40 50% 30%);
+        }
+        
+        /* Animations */
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-up {
+            animation: fade-up 0.6s var(--transition-smooth);
+        }
+        
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: --text-secondary;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <p class="welcome-text">Welcome back, <span id="userName">{{ user.get_short_name|default:"User" }}</span></p>
+                <a href="{% url 'music:landing' %}" class="back-button">← Back to Home</a>
+                <h1 class="header-title">Your Library</h1>
+            </div>
+            <a href="{% url 'music:song_generate' %}" class="btn-new-song">
+                <span>➕</span>
+                <span>New song</span>
+            </a>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input
+                type="text"
+                id="searchInput"
+                class="search-input"
+                placeholder="Search your songs..."
+            />
+        </div>
+
+        <!-- Songs Container -->
+        <div id="songsContainer">
+            <!-- Songs will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // Songs data from Django - with fallback
+        let allSongs = [];
+        try {
+            allSongs = {{ songs_json|safe }};
+        } catch (e) {
+            console.error('Error loading songs:', e);
+            allSongs = [];
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function renderSongs(songs) {
+            const container = document.getElementById('songsContainer');
+            
+            if (songs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p class="empty-state-text">No songs found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="songs-grid">
+                    ${songs.map(song => `
+                        <a href="/music/song/${song.id}/" class="song-card">
+                            <div class="song-card-content">
+                                <div class="song-cover" style="background: linear-gradient(135deg, hsl(${song.coverHue || 215} 75% 65%), hsl(${song.coverHue || 215} 70% 55%));">
+                                    🎵
+                                </div>
+                                <div class="song-info">
+                                    <h3 class="song-title">${escapeHtml(song.title)}</h3>
+                                    <p class="song-meta">${escapeHtml(song.genre)} · ${escapeHtml(song.mood)}</p>
+                                    <div class="song-duration">
+                                        <span>🕐</span>
+                                        <span>${formatTime(song.duration)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="song-tags">
+                                <span class="tag occasion">${escapeHtml(song.occasion)}</span>
+                                <span class="tag voice">${escapeHtml(song.voiceTone)}</span>
+                            </div>
+                        </a>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = allSongs.filter(song => 
+                song.title.toLowerCase().includes(query)
+            );
+            renderSongs(filtered);
+        });
+
+        // Initial render
+        renderSongs(allSongs);
+    </script>
+</body>
+</html>

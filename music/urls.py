@@ -5,6 +5,7 @@ app_name = 'music'
 
 urlpatterns = [
     path('', auth_controller.landing_page, name='landing'),
+    path('login/', auth_controller.login_page, name='login'),
     path('library/', library_controller.library_page, name='library'),
     path('song/generate/', song_controller.generate_song_page, name='song_generate'),
     path('song/create/', song_controller.create_song, name='song_create'),

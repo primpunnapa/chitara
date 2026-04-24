@@ -14,17 +14,3 @@ class MockSongGeneratorStrategy(SongGeneratorStrategy):
             "voice_tone": request_data['voice_tone'],
             "duration": 152.72
         }
-    
-    def check_status(self, task_id):
-        return {
-            "data": {
-                "status": "SUCCESS",
-                "response": {
-                    "data": [
-                        {
-                            "audio_url": "https://tempfile.aiquickdraw.com/r/dd74fddfff28484ba0b2f198b1ef1a9a.mp3",
-                        }
-                    ]
-                }
-            }
-        }
