@@ -270,6 +270,88 @@
             border-radius: 0.5rem;
         }
 
+        .share-section {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .share-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            background: var(--surface);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .share-button:hover {
+            border-color: hsl(215, 75%, 65%);
+            color: hsl(215, 75%, 65%);
+            background: hsl(215, 90%, 95%);
+        }
+
+        .share-button.copied {
+            background: hsl(142, 71%, 45%);
+            color: white;
+            border-color: hsl(142, 71%, 45%);
+        }
+
+        /* .parameters-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: hsl(215, 90%, 95%);
+            border-radius: 1rem;
+            border: 1px solid hsl(215, 70%, 85%);
+        }
+
+        .parameters-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .parameter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .parameter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        .parameter-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            padding: 0.5rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+        } */
+
         .divider {
             border-top: 1px solid var(--border);
             margin: 2rem 0;
@@ -356,14 +438,7 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <div class="logo">♪ Chitara</div>
-            <nav>
-                <a href="{% url 'music:library' %}">Library</a>
-            </nav>
-        </div>
-    </header>
+    {% include 'navbar.html' %}
 
     <main>
         <div class="card">
@@ -427,8 +502,47 @@
                     <source src="{{ song.audio_url }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
+                <div class="share-section">
+                    <button class="share-button" onclick="copyToClipboard('{{ song.audio_url }}', this)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        Copy audio link
+                    </button>
+                    <a href="{{ song.audio_url }}" target="_blank" class="share-button" download>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download
+                    </a>
+                </div>
             </div>
             {% endif %}
+
+            <!-- <div class="parameters-section">
+                <h3>Generation Parameters</h3>
+                <div class="parameters-grid">
+                    <div class="parameter-item">
+                        <span class="parameter-label">Genre</span>
+                        <span class="parameter-value">{{ song.genre }}</span>
+                    </div>
+                    <div class="parameter-item">
+                        <span class="parameter-label">Mood</span>
+                        <span class="parameter-value">{{ song.mood }}</span>
+                    </div>
+                    <div class="parameter-item">
+                        <span class="parameter-label">Occasion</span>
+                        <span class="parameter-value">{{ song.occasion }}</span>
+                    </div>
+                    <div class="parameter-item">
+                        <span class="parameter-label">Voice Tone</span>
+                        <span class="parameter-value">{{ song.voice_tone }}</span>
+                    </div>
+                </div>
+            </div> -->
 
             <div class="divider"></div>
 
@@ -460,6 +574,21 @@
         function cancelEditTitle() {
             document.getElementById('editForm').style.display = 'none';
             document.getElementById('titleContainer').style.display = 'block';
+        }
+
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.classList.add('copied');
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="20 6 9 17 4 12"></polyline></svg>Copied!';
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy');
+            });
         }
 
         // Allow Escape key to cancel editing

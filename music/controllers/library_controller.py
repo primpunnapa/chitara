@@ -9,7 +9,8 @@ def library_page(request):
     
     try:
         library = request.user.library
-        songs = library.songs.all()
+        # Sort by created_at descending (latest first)
+        songs = library.songs.all().order_by('-created_at')
     except:
         songs = []
     
@@ -24,7 +25,8 @@ def library_page(request):
             'duration': song.duration or 0,
             'occasion': song.occasion,
             'voiceTone': song.voice_tone,
-            'coverHue': getattr(song, 'cover_hue', 215)
+            'coverHue': getattr(song, 'cover_hue', 215),
+            'created_at': song.created_at.isoformat()
         })
     
     songs_json = json.dumps(songs_data)

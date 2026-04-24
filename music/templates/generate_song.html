@@ -39,8 +39,10 @@
             font-family: 'Inter', system-ui, sans-serif;
             background: var(--gradient-hero);
             color: hsl(var(--foreground));
-            overflow-x: hidden;
-            min-height: 100vh;
+            overflow: hidden; /* ป้องกันการ scroll */
+            height: 100vh; /* ความสูงเท่าหน้าจอ */
+            display: flex;
+            flex-direction: column;
         }
         
         h1, h2, h3, .font-display {
@@ -49,44 +51,67 @@
             letter-spacing: -0.02em;
         }
         
+        /* Container - ปรับให้พอดีกับหน้าจอ */
         .container {
             max-width: 48rem;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 1rem 1.5rem;
             animation: fade-up 0.6s var(--transition-smooth);
+            flex: 1;
+            overflow-y: auto; /* ให้ scroll เฉพาะ content ถ้าจำเป็น */
+            height: calc(100vh - 60px); /* ลบความสูง navbar */
+        }
+        
+        /* Hide scrollbar but keep functionality */
+        .container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .container::-webkit-scrollbar-track {
+            background: hsl(var(--sky-100) / 0.3);
+            border-radius: 10px;
+        }
+        
+        .container::-webkit-scrollbar-thumb {
+            background: hsl(var(--sky-400) / 0.5);
+            border-radius: 10px;
+        }
+        
+        .container::-webkit-scrollbar-thumb:hover {
+            background: hsl(var(--sky-500) / 0.7);
         }
         
         /* Header */
         .header {
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
         }
         
         .header h1 {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: 600;
             color: hsl(var(--foreground));
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
         
         @media (min-width: 768px) {
             .header h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
         }
         
         .header p {
             color: hsl(220 20% 50%);
-            margin-top: 0.5rem;
+            font-size: 0.875rem;
         }
         
-        /* Form */
+        /* Form - ลด gap และ padding */
         .form {
             display: flex;
             flex-direction: column;
-            gap: 1.75rem;
+            gap: 1rem;
             background: var(--gradient-card);
-            border-radius: 1.875rem;
-            padding: 1.5rem;
+            border-radius: 1.5rem;
+            padding: 1.25rem;
             border: 1px solid hsl(var(--sky-200) / 0.5);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -95,7 +120,7 @@
         
         @media (min-width: 768px) {
             .form {
-                padding: 2rem;
+                padding: 1.5rem;
             }
         }
         
@@ -106,25 +131,25 @@
         }
         
         .form-group label {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.375rem;
             color: hsl(var(--foreground));
         }
         
         .form-group.with-pills label {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
         
         /* Input */
         input[type="text"],
         textarea {
-            padding: 0.75rem 1rem;
-            border-radius: 0.875rem;
+            padding: 0.625rem 0.875rem;
+            border-radius: 0.75rem;
             background: white;
             border: 1px solid hsl(var(--sky-200));
             font-family: 'Inter', system-ui, sans-serif;
-            font-size: 1rem;
+            font-size: 0.875rem;
             color: hsl(var(--foreground));
             transition: all 0.3s ease;
         }
@@ -143,20 +168,20 @@
         
         textarea {
             resize: none;
-            min-height: 6rem;
+            min-height: 4rem;
         }
         
         /* Pill Buttons */
         .pills {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.375rem;
         }
         
         .pill {
-            padding: 0.5rem 1rem;
+            padding: 0.375rem 0.875rem;
             border-radius: 9999px;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 500;
             border: 1px solid hsl(var(--sky-100));
             background: hsl(0 0% 100% / 0.65);
@@ -185,16 +210,17 @@
             justify-content: center;
             gap: 0.5rem;
             width: 100%;
-            padding: 1rem 1.5rem;
-            border-radius: 0.875rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
             background: var(--gradient-primary);
             color: hsl(var(--background));
             font-weight: 500;
-            font-size: 1rem;
+            font-size: 0.875rem;
             border: none;
             cursor: pointer;
             box-shadow: var(--shadow-glow);
             transition: all 0.3s var(--transition-smooth);
+            margin-top: 0.25rem;
         }
         
         .submit-btn:hover:not(:disabled) {
@@ -208,8 +234,8 @@
         }
         
         .spinner {
-            width: 1.25rem;
-            height: 1.25rem;
+            width: 1rem;
+            height: 1rem;
             border: 2px solid hsl(var(--background) / 0.2);
             border-top-color: hsl(var(--background));
             border-radius: 50%;
@@ -225,16 +251,17 @@
             position: fixed;
             bottom: 1rem;
             right: 1rem;
-            padding: 1rem 1.25rem;
-            border-radius: 0.875rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
             background: white;
             color: hsl(var(--foreground));
             box-shadow: var(--shadow-glow);
             z-index: 1000;
-            max-width: 400px;
+            max-width: 350px;
             animation: slideUp 0.3s var(--transition-smooth);
             word-wrap: break-word;
-            line-height: 1.5;
+            line-height: 1.4;
+            font-size: 0.875rem;
         }
         
         .toast.success {
@@ -273,9 +300,30 @@
                 transform: translateY(0);
             }
         }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 0.75rem 1rem;
+            }
+            
+            .form {
+                padding: 1rem;
+            }
+            
+            .pills {
+                gap: 0.25rem;
+            }
+            
+            .pill {
+                padding: 0.25rem 0.75rem;
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -284,14 +332,16 @@
         </div>
 
         <!-- Form -->
-        <form class="form" id="generateForm" method="POST" action="{% url 'music:song_create' %}">
+        <form class="form" id="generateForm" method="POST" action="{% url 'music:song_review' %}">
             {% csrf_token %}
+            
             <!-- Title -->
             <div class="form-group">
                 <label for="title">Title</label>
                 <input
                     type="text"
                     id="title"
+                    name="title"
                     placeholder="e.g. Sunrise Over Pines"
                     required
                 />
@@ -301,28 +351,28 @@
             <div class="form-group with-pills">
                 <label>Genre</label>
                 <div class="pills" id="genrePills"></div>
-                <input type="hidden" id="genre" value="Pop">
+                <input type="hidden" id="genre" name="genre" value="POP">
             </div>
 
             <!-- Mood -->
             <div class="form-group with-pills">
                 <label>Mood</label>
                 <div class="pills" id="moodPills"></div>
-                <input type="hidden" id="mood" value="Happy">
+                <input type="hidden" id="mood" name="mood" value="HAPPY">
             </div>
 
             <!-- Occasion -->
             <div class="form-group with-pills">
                 <label>Occasion</label>
                 <div class="pills" id="occasionPills"></div>
-                <input type="hidden" id="occasion" value="Relaxation">
+                <input type="hidden" id="occasion" name="occasion" value="RELAXATION">
             </div>
 
             <!-- Voice Tone -->
             <div class="form-group with-pills">
                 <label>Voice tone</label>
                 <div class="pills" id="voicePills"></div>
-                <input type="hidden" id="voice" value="Male">
+                <input type="hidden" id="voice" name="voice_tone" value="MALE">
             </div>
 
             <!-- Optional Details -->
@@ -330,13 +380,14 @@
                 <label for="description">More details (optional)</label>
                 <textarea
                     id="description"
+                    name="description"
                     placeholder="Describe the story, or paste lyrics..."
                 ></textarea>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" class="submit-btn" id="submitBtn">
-                <span>Generate song</span>
+                <span>Review song</span>
             </button>
         </form>
     </div>
@@ -354,17 +405,22 @@
         function initPills(containerId, options, fieldId, defaultValue) {
             const container = document.getElementById(containerId);
             const field = document.getElementById(fieldId);
-            field.value = defaultValue;
+            
+            // Set default value
+            const defaultOption = options.find(opt => opt.toUpperCase() === defaultValue.toUpperCase());
+            field.value = defaultOption || options[0];
 
             options.forEach(option => {
                 const button = document.createElement('button');
                 button.type = 'button';
-                button.className = `pill ${option === defaultValue ? 'active' : ''}`;
+                button.className = `pill ${option === field.value ? 'active' : ''}`;
                 button.textContent = option;
                 button.addEventListener('click', (e) => {
                     e.preventDefault();
+                    // Remove active class from all buttons in this container
                     document.querySelectorAll(`#${containerId} .pill`).forEach(b => b.classList.remove('active'));
                     button.classList.add('active');
+                    // Update hidden input value
                     field.value = option;
                 });
                 container.appendChild(button);
@@ -372,10 +428,10 @@
         }
 
         // Initialize all pill selectors
-        initPills('genrePills', GENRES, 'genre', 'Pop');
-        initPills('moodPills', MOODS, 'mood', 'Happy');
-        initPills('occasionPills', OCCASIONS, 'occasion', 'Relaxation');
-        initPills('voicePills', VOICE_TONES, 'voice', 'Male');
+        initPills('genrePills', GENRES, 'genre', 'POP');
+        initPills('moodPills', MOODS, 'mood', 'HAPPY');
+        initPills('occasionPills', OCCASIONS, 'occasion', 'RELAXATION');
+        initPills('voicePills', VOICE_TONES, 'voice', 'MALE');
 
         // Toast notifications
         function showToast(message, type = 'info') {
@@ -394,57 +450,43 @@
             }, duration);
         }
 
-        // Form submission
-        document.getElementById('generateForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Check if form was previously submitted (prevent stuck loading state)
+        let isFormSubmitting = false;
+        
+        // Restore button state when page loads (for back button)
+        window.addEventListener('pageshow', function(event) {
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Review song</span>';
+                isFormSubmitting = false;
+            }
+        });
 
+        // Form submission validation
+        document.getElementById('generateForm').addEventListener('submit', (e) => {
             const title = document.getElementById('title').value.trim();
             if (!title) {
+                e.preventDefault();
                 showToast('Please give your song a title', 'error');
                 return;
             }
-
+            
+            // Prevent double submission
+            if (isFormSubmitting) {
+                e.preventDefault();
+                return;
+            }
+            
+            isFormSubmitting = true;
+            
+            // Show loading state
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-
-            showToast('Composing your song...', 'loading');
-
-            const formData = new FormData();
-            formData.append('title', document.getElementById('title').value);
-            formData.append('genre', document.getElementById('genre').value);
-            formData.append('mood', document.getElementById('mood').value);
-            formData.append('occasion', document.getElementById('occasion').value);
-            formData.append('voice_tone', document.getElementById('voice').value);
-            formData.append('description', document.getElementById('description').value);
-            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-
-            try {
-                const response = await fetch('{% url "music:song_create" %}', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showToast('Song generated!', 'success');
-                    setTimeout(() => {
-                        window.location.href = `/music/song/${result.song_id}/`;
-                    }, 500);
-                } else {
-                    // Extract the error message and remove "Suno API Error: " prefix if present
-                    let errorMsg = result.error || 'Generation failed';
-                    errorMsg = errorMsg.replace(/^Suno API Error: /, '');
-                    showToast(errorMsg, 'error');
-                    submitBtn.disabled = false;
-                }
-
-            } catch (err) {
-                console.error('Error:', err);
-                showToast('Error connecting to server. Please check your connection and try again.', 'error');
-                submitBtn.disabled = false;
-            }
-        }); 
+            submitBtn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
+            
+            // Allow form to submit naturally
+        });
     </script>
 </body>
 </html>

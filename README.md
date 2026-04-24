@@ -36,11 +36,11 @@ To get a SUNO_API_KEY, you can sign up for an account on the Suno website and ge
 https://sunoapi.org/api-key
 
 ## How to use strategies
-### Option 1: Via the test file
+### Option 1: Via the test file (music/management/commands/test_generate.py)
 ```bash
 python manage.py test_generate --strategy=mock
 python manage.py test_generate --strategy=suno # this will create a new song and print the result
-python manage.py test_generate --strategy suno --task_id your_existing_task_id_here # no credit used, just check status of existing task
+python manage.py test_generate --strategy suno --task_id your_existing_task_id_here # no credit used, just check status of existing task and save in database if completed successfully
 ```
 ### Option 2: Via the UI
 please make sure to set the GENERATOR_STRATEGY in the .env file before using the UI.
@@ -78,9 +78,9 @@ from music.strategies.suno_strategy import SunoSongGeneratorStrategy
 strategy = SunoSongGeneratorStrategy()
 
 data = {
-    "prompt": "A calm and relaxing piano track with soft melodies",
-    "style": "Classical",
-    "title": "Peaceful Piano Meditation",
+    "prompt": "your detailed prompt here",
+    "style": "your desired style here",
+    "title": "your song title here",
     "customMode": False,
     "instrumental": True,
     "model": "V4_5ALL",
@@ -89,10 +89,26 @@ data = {
 strategy.generate(data)
 ```
 
+### Check status of existing suno task
+use python manage.py shell to check the status of an existing suno task by its task_id
+```python
+from music.strategies.suno_strategy import SunoSongGeneratorStrategy
+strategy = SunoSongGeneratorStrategy()
+task_id = "your_existing_task_id_here"
+status = strategy.check_status(task_id)
+```
+![check status](./screenshots/checkstatus.png)
+
 ## Features
 - User, Library, Song domain models
 - Enum-based attributes
 - CRUD via Django Admin
+
+## Class Diagram
+![Class Diagram](./screenshots/class_diagram.png)
+
+## Sequence Diagram
+![Sequence Diagram](./screenshots/sequence_diagram.png)
 
 ## Demo CRUD video
 ![CRUD Demo](./screenshots/demo.mp4)
@@ -110,3 +126,17 @@ strategy.generate(data)
 - With command: `python manage.py test_generate --strategy=suno --task_id your_existing_task_id_here`
 ![suno strategy existing task](./screenshots/suno_command_exist.png)
 ![suno strategy existing task](./screenshots/suno_ui_exist.png)
+
+## Website Screenshots
+- Landing Page
+![Landing Page](./screenshots/landing.png)
+- Login Page
+![Login Page](./screenshots/login.png)
+- Library Page
+![Library Page](./screenshots/library.png)
+- Song Detail Page
+![Song Detail Page](./screenshots/song_detail.png)
+- Song Generation Page
+![Song Generation Page](./screenshots/generate.png)
+- Song Review Page
+![Song Review Page](./screenshots/review.png)

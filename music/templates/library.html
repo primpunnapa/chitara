@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Library - Melodia</title>
+    <title>Your Library - Chitara</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add" />
     <style>
         * {
             margin: 0;
@@ -131,7 +132,6 @@
         /* Search */
         .search-container {
             position: relative;
-            max-width: 28rem;
             margin-bottom: 2rem;
         }
         
@@ -278,7 +278,16 @@
             gap: 0.375rem;
             margin-top: 0.75rem;
             font-size: 0.75rem;
-            color: --text-secondary;
+            color: var(--text-secondary);
+        }
+
+        .song-date {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
         }
         
         .song-tags {
@@ -330,45 +339,33 @@
             color: --text-secondary;
         }
 
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            margin-bottom: 1.5rem;
-            padding: 0.5rem 0;
-            transition: color 0.3s;
-        }
     </style>
 </head>
 <body>
+    {% include 'navbar.html' %}
     <div class="container">
         <!-- Header -->
         <div class="header">
             <div class="header-left">
-                <p class="welcome-text">Welcome back, <span id="userName">{{ user.get_short_name|default:"User" }}</span></p>
-                <a href="{% url 'music:landing' %}" class="back-button">← Back to Home</a>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+                <p class="welcome-text">Welcome, <span id="userName">{{ user.get_short_name|default:"User" }}</span></p>
                 <h1 class="header-title">Your Library</h1>
             </div>
-            <a href="{% url 'music:song_generate' %}" class="btn-new-song">
-                <span>➕</span>
+            <a href="{% url 'music:generate_song' %}" class="btn-new-song">
+                <span class="material-symbols-outlined">add</span>
                 <span>New song</span>
             </a>
         </div>
 
         <!-- Search -->
         <div class="search-container">
-            <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <span class="material-symbols-outlined">search
             <input
                 type="text"
                 id="searchInput"
                 class="search-input"
                 placeholder="Search your songs..."
-            />
+            /></span>
         </div>
 
         <!-- Songs Container -->
@@ -393,6 +390,30 @@
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const now = new Date();
+
+            // Compare year/month/day only
+            const dateDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const yesterday = new Date(today);
+            yesterday.setDate(today.getDate() - 1);
+
+            const diffMs = today - dateDay;
+            const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+            if (diffDays === 0) {
+                return 'Today';
+            } else if (diffDays === 1) {
+                return 'Yesterday';
+            } else if (diffDays < 7) {
+                return date.toLocaleDateString('en-US', { weekday: 'long' }); // "Monday"
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            }
+        }
+
         function renderSongs(songs) {
             const container = document.getElementById('songsContainer');
             
@@ -407,18 +428,22 @@
 
             container.innerHTML = `
                 <div class="songs-grid">
-                    ${songs.map(song => `
-                        <a href="/music/song/${song.id}/" class="song-card">
+                    ${songs.map((song, index) => `
+                        <a href="/music/song/${song.id}/" class="song-card" data-song-index="${index}">
                             <div class="song-card-content">
                                 <div class="song-cover" style="background: linear-gradient(135deg, hsl(${song.coverHue || 215} 75% 65%), hsl(${song.coverHue || 215} 70% 55%));">
-                                    🎵
+                                   <span class="material-symbols-outlined">music_note</span>
                                 </div>
                                 <div class="song-info">
                                     <h3 class="song-title">${escapeHtml(song.title)}</h3>
                                     <p class="song-meta">${escapeHtml(song.genre)} · ${escapeHtml(song.mood)}</p>
                                     <div class="song-duration">
-                                        <span>🕐</span>
+                                        <span class="material-symbols-outlined">nest_clock_farsight_analog</span>
                                         <span>${formatTime(song.duration)}</span>
+                                    </div>
+                                    <div class="song-date">
+                                        <span class="material-symbols-outlined">calendar_today</span>
+                                        <span>${formatDate(song.created_at)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -430,6 +455,37 @@
                     `).join('')}
                 </div>
             `;
+
+            // Setup autoplay functionality
+            setupAutoplay(songs);
+        }
+
+        // Autoplay functionality
+        let currentAutoplayIndex = -1;
+        let autoplayEnabled = false;
+
+        function setupAutoplay(songs) {
+            document.querySelectorAll('.song-card').forEach((card) => {
+                card.addEventListener('click', (e) => {
+                    // Don't prevent default - let the navigation happen
+                    // But start autoplay from this song
+                    currentAutoplayIndex = parseInt(card.dataset.songIndex);
+                });
+            });
+        }
+
+        function playNextSong() {
+            if (!autoplayEnabled || currentAutoplayIndex < 0) return;
+            
+            const filteredSongs = getCurrentFilteredSongs();
+            if (currentAutoplayIndex < filteredSongs.length - 1) {
+                currentAutoplayIndex++;
+                const nextSong = filteredSongs[currentAutoplayIndex];
+                window.location.href = `/music/song/${nextSong.id}/`;
+            } else {
+                autoplayEnabled = false;
+                currentAutoplayIndex = -1;
+            }
         }
 
         function escapeHtml(text) {
@@ -438,12 +494,16 @@
             return div.innerHTML;
         }
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filtered = allSongs.filter(song => 
+        function getCurrentFilteredSongs() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            return allSongs.filter(song => 
                 song.title.toLowerCase().includes(query)
             );
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const filtered = getCurrentFilteredSongs();
             renderSongs(filtered);
         });
 

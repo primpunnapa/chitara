@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Your Song - Chitara</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --background: 210 60% 98%;
+            --foreground: 220 45% 18%;
+            --sky-50: 205 90% 96%;
+            --sky-100: 205 85% 90%;
+            --sky-200: 205 80% 82%;
+            --sky-300: 210 75% 72%;
+            --sky-400: 215 70% 62%;
+            --sky-500: 220 65% 52%;
+            --sky-600: 222 60% 42%;
+            
+            --gradient-hero: radial-gradient(ellipse at top, hsl(210 90% 92%), hsl(220 75% 96%) 60%, hsl(40 60% 98%));
+            --gradient-card: linear-gradient(160deg, hsl(0 0% 100% / 0.85), hsl(205 80% 96% / 0.6));
+            --gradient-primary: linear-gradient(135deg, hsl(215 75% 65%), hsl(225 70% 55%));
+            --gradient-glow: radial-gradient(circle, hsl(210 90% 75% / 0.5), transparent 70%);
+            
+            --shadow-soft: 0 10px 40px -15px hsl(220 60% 50% / 0.18);
+            --shadow-glow: 0 20px 60px -20px hsl(215 80% 60% / 0.35);
+            --shadow-card: 0 4px 20px -8px hsl(220 50% 40% / 0.12);
+            
+            --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+            --text-secondary: hsl(220 20% 50%);
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--gradient-hero);
+            color: hsl(var(--foreground));
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, .font-display {
+            font-family: 'Fraunces', Georgia, serif;
+            font-optical-sizing: auto;
+            letter-spacing: -0.02em;
+        }
+        
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            animation: fade-up 0.6s var(--transition-smooth);
+        }
+        
+        /* Header */
+        .header {
+            margin-bottom: 2rem;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .header p {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        
+        /* Parameters Section */
+        .parameters-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--gradient-card);
+            border-radius: 1.875rem;
+            border: 1px solid hsl(var(--sky-200) / 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .parameters-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .parameter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .parameter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        .parameter-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: hsl(var(--foreground));
+            padding: 0.5rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid hsl(var(--sky-200));
+        }
+        
+        /* Song Title Section */
+        .song-title-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--gradient-card);
+            border-radius: 1.875rem;
+            border: 1px solid hsl(var(--sky-200) / 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .song-title-section h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+        
+        .song-description {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid hsl(var(--sky-200) / 0.5);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        /* Form */
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+        }
+        
+        @media (min-width: 640px) {
+            .form-actions {
+                flex-direction: row;
+            }
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.875rem;
+            font-weight: 500;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            text-decoration: none;
+            flex: 1;
+        }
+        
+        .btn-generate {
+            background: var(--gradient-primary);
+            color: hsl(var(--background));
+            box-shadow: var(--shadow-glow);
+        }
+        
+        .btn-generate:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+        
+        .btn-generate:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: translateY(0);
+        }
+        
+        .btn-back {
+            background: hsl(0 0% 100% / 0.65);
+            color: hsl(var(--foreground));
+            border: 1px solid hsl(var(--sky-200));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        
+        .btn-back:hover {
+            border-color: hsl(var(--sky-500) / 0.4);
+            background: hsl(0 0% 100% / 0.8);
+        }
+        
+        .spinner {
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid hsl(var(--background) / 0.2);
+            border-top-color: hsl(var(--background));
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 1rem 1.25rem;
+            border-radius: 0.875rem;
+            background: white;
+            color: hsl(var(--foreground));
+            box-shadow: var(--shadow-glow);
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideUp 0.3s var(--transition-smooth);
+            word-wrap: break-word;
+            line-height: 1.5;
+        }
+        
+        .toast.success {
+            background: hsl(142 71% 45%);
+            color: white;
+        }
+        
+        .toast.error {
+            background: hsl(0 75% 60%);
+            color: white;
+        }
+        
+        .toast.loading {
+            background: hsl(var(--sky-500));
+            color: white;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fade-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Review Your Song</h1>
+            <p>Everything looks good? Proceed to generate.</p>
+        </div>
+
+        <!-- Song Title Section -->
+        <div class="song-title-section">
+            <h2>{{ title }}</h2>
+            {% if description %}
+            <div class="song-description">{{ description }}</div>
+            {% endif %}
+        </div>
+
+        <!-- Parameters Section -->
+        <div class="parameters-section">
+            <h3>Generation Parameters</h3>
+            <div class="parameters-grid">
+                <div class="parameter-item">
+                    <span class="parameter-label">Genre</span>
+                    <span class="parameter-value">{{ genre }}</span>
+                </div>
+                <div class="parameter-item">
+                    <span class="parameter-label">Mood</span>
+                    <span class="parameter-value">{{ mood }}</span>
+                </div>
+                <div class="parameter-item">
+                    <span class="parameter-label">Occasion</span>
+                    <span class="parameter-value">{{ occasion }}</span>
+                </div>
+                <div class="parameter-item">
+                    <span class="parameter-label">Voice Tone</span>
+                    <span class="parameter-value">{{ voice_tone }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form class="review-form" id="reviewForm" method="POST" action="{% url 'music:song_create' %}">
+            {% csrf_token %}
+            <!-- Hidden inputs to preserve form data -->
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="genre" value="{{ genre }}">
+            <input type="hidden" name="mood" value="{{ mood }}">
+            <input type="hidden" name="occasion" value="{{ occasion }}">
+            <input type="hidden" name="voice_tone" value="{{ voice_tone }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-back" onclick="window.history.back()">Back</button>
+                <button type="submit" class="btn btn-generate" id="submitBtn">
+                    <span>Generate Song</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // Toast notifications
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            // Longer duration for error messages
+            const duration = type === 'error' ? 4000 : 2000;
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideUp 0.3s var(--transition-smooth) reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // Form submission
+        document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div><span>Generating...</span>';
+
+            showToast('Composing your song...', 'loading');
+
+            const formData = new FormData();
+            formData.append('title', document.querySelector('input[name="title"]').value);
+            formData.append('genre', document.querySelector('input[name="genre"]').value);
+            formData.append('mood', document.querySelector('input[name="mood"]').value);
+            formData.append('occasion', document.querySelector('input[name="occasion"]').value);
+            formData.append('voice_tone', document.querySelector('input[name="voice_tone"]').value);
+            formData.append('description', document.querySelector('input[name="description"]').value);
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+            try {
+                const response = await fetch('{% url "music:song_create" %}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast('Song generated successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `/music/song/${result.song_id}/`;
+                    }, 500);
+                } else {
+                    // Extract the error message and remove "Suno API Error: " prefix if present
+                    let errorMsg = result.error || 'Generation failed';
+                    errorMsg = errorMsg.replace(/^Suno API Error: /, '');
+                    showToast(errorMsg, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Generate Song</span>';
+                }
+
+            } catch (err) {
+                console.error('Error:', err);
+                showToast('Error connecting to server. Please check your connection and try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Generate Song</span>';
+            }
+        });
+    </script>
+</body>
+
+</html>

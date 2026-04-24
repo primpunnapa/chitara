@@ -6,8 +6,29 @@ from music.strategies import get_generator_strategy
 from music.services.song_service import SongGenerationContext
 from music.models.song import Song
 
-def generate_song_page(request):
+def generate_song(request):
     return render(request, 'generate_song.html')
+
+@login_required
+def song_review(request):
+    if request.method == 'POST':
+        context = {
+            'title': request.POST.get('title', '').strip(),
+            'genre': request.POST.get('genre', '').upper(),
+            'mood': request.POST.get('mood', '').upper(),
+            'occasion': request.POST.get('occasion', '').upper(),
+            'voice_tone': request.POST.get('voice_tone', '').upper(),
+            'description': request.POST.get('description', '').strip(),
+        }
+        
+        # check if title is empty or duplicate, if so redirect back to generate page with error message
+        if not context['title'] or Song.objects.filter(user=request.user, title=context['title']).exists():
+            return redirect('music:generate_song')
+        
+        return render(request, 'song_review.html', context)
+    
+    # if GET request or other methods, redirect back to generate page
+    return redirect('music:generate_song')
 
 @login_required
 @require_http_methods(["POST"])
