@@ -2,10 +2,14 @@
 
 The Chitara project is a AI-powered song generation created by Django-based application that provides a backend for managing users, libraries, and songs. It includes features such as user authentication, song generation limits, and CRUD operations for the main domain models.
 
-# prerequisites
+## Prerequisites
 - Python 3.8+
 
 ## Setup
+```bash
+git clone
+cd chitara https://github.com/primpunnapa/chitara.git
+```
 1. Create virtual environment & Install Django
 ```bash
     python -m venv venv
@@ -65,12 +69,19 @@ from music.strategies.mock_strategy import MockSongGeneratorStrategy
 strategy = MockSongGeneratorStrategy()
 
 data = {
-    "title": "mock song",
-    "audio_url" : "https://example.com/mock-song.mp3"
+      "title": "Test Song",
+      "task_id": "mock_task_id_123",
+      "genre": "POP",
+      "mood": "HAPPY",
+      "occasion": "PARTY",
+      "voice_tone": "FEMALE",
+      "description": "A happy pop song for parties",
+      "duration": 180
 }
 
 strategy.generate(data)
 ```
+![mock strategy](./screenshots/mock_shell.png)
 3. To use suno strategy and generate a song
 ```python
 from music.strategies.suno_strategy import SunoSongGeneratorStrategy
