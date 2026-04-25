@@ -46,8 +46,8 @@ python manage.py test_generate --strategy=mock
 python manage.py test_generate --strategy=suno # this will create a new song and print the result
 python manage.py test_generate --strategy suno --task_id your_existing_task_id_here # no credit used, just check status of existing task and save in database if completed successfully
 ```
-### Option 2: Via the UI
-please make sure to set the GENERATOR_STRATEGY in the .env file before using the UI.
+### Option 2: Test in runtime
+Please make sure to set the GENERATOR_STRATEGY in the .env file before using the UI.
 ```bash
 GENERATOR_STRATEGY="mock"  # or "suno"
 ```
